@@ -1,12 +1,31 @@
 #include <avr/io.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
+
+#include "usbdrv.h"
+
+USB_PUBLIC usbMsgLen_t usbFunctionSetup(uchar data[8]) {
+  return 0;
+}
+
+void enforceEnumeration() {
+  usbDeviceDisconnect();
+  _delay_ms(250);
+  usbDeviceConnect();
+}
+
+void initializeUSBDriver() {
+  enforceEnumeration();
+  usbInit();
+  sei();
+}
 
 int main (void) {
-  DDRB |= _BV(DDB0);
+  initializeUSBDriver();
 
-  for(;;)
-  {
-    PORTB ^= _BV(PB0);
-    _delay_ms(1000);
+  for(;;) {
+    usbPoll();
   }
+
+  return 0;
 }
