@@ -2,7 +2,7 @@ MCU=attiny85
 F_CPU=16500000UL
 
 PROGRAMMER=stk500v1
-PORT=/dev/cu.usbmodem1411
+PORT=$(shell find /dev -name "cu.usbmodem*" -print 2>/dev/null)
 BAUD_RATE=19200
 
 AVRDUDE=avrdude
