@@ -27,12 +27,12 @@ main.elf: $(SRC)/main.c $(V-USB)
 .S.o:
 	$(CC) $(ALL_CFLAGS) -x assembler-with-cpp -c $< -o $@
 
-.PHONY: flash fuse clean
+.PHONY: flash fuse clean programmer_present
 
-flash: main.elf
+flash: main.elf programmer_present
 	$(AVRDUDE) $(DUDEFLAGS) -U flash:w:$<
 
-fuse:
+fuse: programmer_present
 ifeq ($(and $(strip $(LFUSE)), $(strip $(HFUSE)), $(strip $(EFUSE))),)
 	$(error You have to provide LFUSE, HFUSE and EFUSE)
 else
@@ -44,3 +44,8 @@ endif
 
 clean:
 	find . \( -name "*.o" -or -name "*.elf" \) -type f -delete -print
+
+programmer_present:
+ifeq ($(strip $(PORT)),)
+	$(error No programmer present, sorry)
+endif
